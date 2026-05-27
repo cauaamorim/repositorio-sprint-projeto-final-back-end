@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sistema-bancario-Sprint")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+24e57bbbeee4bf2649964999b89ca1afd0ed4058")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c669c70ee0e1f72c79eabc63b86a175b951f389b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sistema-bancario-Sprint")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sistema-bancario-Sprint")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

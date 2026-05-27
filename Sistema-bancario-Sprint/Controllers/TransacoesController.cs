@@ -21,7 +21,15 @@ public class TransacoesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Depositar([FromBody] TransacaoDTO dto)
     {
-        // only owner can deposit to their own account
+        // 1. TRAVA PARA LETRAS: Se o usuário enviar letras no campo numérico, o .NET invalida o modelo aqui
+        if (!ModelState.IsValid)
+            return BadRequest(new { message = "Dados inválidos. Certifique-se de que o valor é numérico." });
+
+        // 2. TRAVA PARA VALORES NEGATIVOS OU ZERO
+        if (dto.Valor <= 0)
+            return BadRequest(new { message = "O valor do depósito deve ser maior que zero." });
+
+        // Apenas o dono da conta pode depositar na própria conta
         var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimId, out var ownerId) || ownerId != dto.ContaId)
             return Forbid();
@@ -35,6 +43,14 @@ public class TransacoesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Sacar([FromBody] TransacaoDTO dto)
     {
+        // 1. TRAVA PARA LETRAS: Bloqueia caracteres de texto enviados no lugar do número
+        if (!ModelState.IsValid)
+            return BadRequest(new { message = "Dados inválidos. Certifique-se de que o valor é numérico." });
+
+        // 2. TRAVA PARA VALORES NEGATIVOS OU ZERO
+        if (dto.Valor <= 0)
+            return BadRequest(new { message = "O valor do saque deve ser maior que zero." });
+
         var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(claimId, out var ownerId) || ownerId != dto.ContaId)
             return Forbid();

@@ -35,12 +35,16 @@ public class ContaService : IContaService
 
     public async Task<bool> DepositAsync(int contaId, double valor)
     {
+        // VALIDAÇÃO: Impede depósitos negativos ou zerados
+        if (valor <= 0) return false;
+
         var conta = await _db.Contas.FindAsync(contaId);
         if (conta == null) return false;
+
         // No taxa para depósito neste exemplo
         conta.Creditar(valor);
 
-        var transacao = new Transacao { ContaId = contaId, Valor = valor, Tipo = TipoTransacao.Deposito,Data=DateTime.UtcNow, SaldoApos = (decimal)Math.Round((decimal)conta.Saldo, 2), TaxaAplicada = 0 };
+        var transacao = new Transacao { ContaId = contaId, Valor = valor, Tipo = TipoTransacao.Deposito, Data = DateTime.UtcNow, SaldoApos = (decimal)Math.Round((decimal)conta.Saldo, 2), TaxaAplicada = 0 };
         _db.Transacoes.Add(transacao);
 
         await _db.SaveChangesAsync();
@@ -49,14 +53,11 @@ public class ContaService : IContaService
 
     public async Task<WithdrawResult> WithdrawAsync(int contaId, double valor)
     {
+        // VALIDAÇÃO: Impede saques negativos ou zerados
+        if (valor <= 0) return WithdrawResult.SaldoInsuficiente;
+
         var conta = await _db.Contas.FindAsync(contaId);
         if (conta == null) return WithdrawResult.ContaNaoEncontrada;
-
-        // NOTE: Limite agora funciona como um saldo mínimo (floor).
-        // Ou seja, se o limite estiver ativo, não é mais proibido um saque
-        // somente por ultrapassar um valor por operação. Em vez disso,
-        // impedimos o saque quando o saldo após a operação ficaria abaixo
-        // do `LimiteGasto` configurado.
 
         double taxa = 0;
         if (conta is ContaCorrente)
@@ -99,8 +100,6 @@ public class ContaService : IContaService
         await _db.SaveChangesAsync();
         return WithdrawResult.Success;
     }
-
-
 
     public async Task<bool> UpdateLimitAsync(int contaId, bool limiteAtivo, decimal limiteGasto)
     {

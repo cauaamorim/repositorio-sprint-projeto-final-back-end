@@ -20,7 +20,7 @@ O sistema conta com as seguintes operações principais:
 *(Substitua as tecnologias abaixo pelas que você realmente usou no seu projeto)*
 
 * **Linguagem de Programação:** Python / Java / JavaScript (Node.js)
-* **Banco de Dados:** PostgreSQL / MySQL / SQLite
+* **Banco de Dados:** mysql
 * **Outras bibliotecas:** (Ex: SQLAlchemy, Express, etc.)
 
 ---
@@ -31,11 +31,14 @@ O sistema conta com as seguintes operações principais:
 
 Antes de começar, você precisará ter instalado em sua máquina as seguintes ferramentas:
 * [Git](https://git-scm.com)
-* [Linguagem utilizada - ex: Node.js, Python, etc.]
-* Um servidor de Banco de Dados rodando (ou arquivo local, no caso do SQLite).
+* [Linguagem utilizada - ex: C#
+* Um servidor de Banco de Dados rodando .
+* ATENÇÃO : Fazer Update-Database se for rodar em codigo nativo
 
 ### Passo a passo
 
 1. **Clone este repositório**
    ```bash
    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+
+   

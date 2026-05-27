@@ -1,0 +1,83 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Sistema_bancario_Sprint.DTOs;
+using Sistema_bancario_Sprint.models;
+using Sistema_bancario_Sprint.Services;
+using System.Security.Claims;
+
+namespace Sistema_bancario_Sprint.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ContasController : ControllerBase
+{
+    private readonly IContaService _service;
+
+    public ContasController(IContaService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var contas = await _service.GetAllAsync();
+        return Ok(contas);
+    }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<IActionResult> GetById(int id)
+    {
+        // Ensure the caller is the owner of the account
+        var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(claimId, out var ownerId) || ownerId != id)
+            return Forbid();
+
+        var conta = await _service.GetByIdAsync(id);
+        if (conta == null) return NotFound();
+
+        var result = new {
+            id = conta.Id,
+            nome = conta.Nome,
+            email = conta.Email,
+            saldo = conta.Saldo,
+            tipo = conta.GetType().Name
+        };
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] Conta conta)
+    {
+        var created = await _service.CreateAsync(conta);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+
+    [HttpPut("{id}/limit")]
+    [Authorize]
+    public async Task<IActionResult> SetLimit(int id, [FromBody] LimitDTO dto)
+    {
+        if (dto.LimiteGasto < 0 ) 
+        {
+            return BadRequest(" o valor do limite deve ser maior que 0");
+        }
+
+        //validação para ver se o o usuário é o dono da conta
+        var claimId = User.FindFirst((ClaimTypes.NameIdentifier))?.Value;
+
+        if (!int.TryParse(claimId, out var ownerId) || ownerId != id)
+            return Forbid();
+
+
+        var ok = await _service.UpdateLimitAsync(id, dto.LimiteAtivo, dto.LimiteGasto);
+        if (!ok) return NotFound("Conta não encontrada.");
+
+
+        return Ok(new { id, limiteAtivo = dto.LimiteAtivo, limiteGasto = dto.LimiteGasto });
+    }
+
+
+}

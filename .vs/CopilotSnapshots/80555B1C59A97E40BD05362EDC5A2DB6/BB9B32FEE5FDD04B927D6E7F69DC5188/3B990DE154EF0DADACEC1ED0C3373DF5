@@ -1,0 +1,764 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard - Minha Conta Caixa</title>
+    <style>
+        /* ==========================================
+         1. RESET & TIPOGRAFIA
+         ========================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f1f5f9; /* Fundo geral do dashboard */
+            color: #0f172a;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+         2. SIDEBAR (MENU LATERAL)
+         ========================================== */
+        .sidebar {
+            width: 280px;
+            background: #0f172a; /* Azul muito escuro/Slate */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 32px 24px;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+        }
+
+            .brand svg {
+                width: 32px;
+                height: 32px;
+                color: #3b82f6;
+            }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .menu-item.active {
+                background: #1e293b;
+                color: #ffffff;
+            }
+
+            .menu-item:hover:not(.active) {
+                background: #1e293b;
+                color: #e2e8f0;
+            }
+
+            .menu-item svg {
+                width: 20px;
+                height: 20px;
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid #1e293b;
+            padding-top: 24px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn-logout:hover {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: #ef4444;
+            }
+
+        /* ==========================================
+         3. CONTEÚDO PRINCIPAL & HEADER
+         ========================================== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 40px 56px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+            .header h1 {
+                font-size: 28px;
+                font-weight: 800;
+                color: #0f172a;
+                letter-spacing: -1px;
+            }
+
+        .profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #ffffff;
+            padding: 8px 16px 8px 8px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .user-info span {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* ==========================================
+         4. GRID DO DASHBOARD
+         ========================================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .card-panel {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* -- Cartão Virtual -- */
+        .credit-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 32px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4);
+        }
+
+            .credit-card::after {
+                content: "";
+                position: absolute;
+                right: -40px;
+                top: -40px;
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+        .card-top-info {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .acc-label {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .acc-number {
+            font-family: 'Fira Code', monospace;
+            font-size: 22px;
+            letter-spacing: 2px;
+        }
+
+        .acc-type-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .card-bottom-info {
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .balance-value {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+            .balance-value span {
+                font-size: 24px;
+                font-weight: 500;
+                opacity: 0.8;
+                margin-right: 8px;
+            }
+
+        /* -- Área de Operações -- */
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .prefix {
+            position: absolute;
+            left: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 20px 20px 20px 60px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+            input[type="number"]:focus {
+                background: #ffffff;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-withdraw {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            color: #0f172a;
+        }
+
+            .btn-withdraw:hover {
+                border-color: #0f172a;
+                background: #f8fafc;
+            }
+
+        .btn-deposit {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 8px 16px rgba(59,130,246,0.3);
+        }
+
+            .btn-deposit:hover {
+                background: #2563eb;
+                transform: translateY(-2px);
+            }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==========================================
+         5. ÁREA DE HISTÓRICO (FULL WIDTH)
+         ========================================== */
+        .history-panel {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            flex: 1; /* Preenche o resto do espaço */
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+            th:last-child, td:last-child {
+                text-align: right;
+            }
+        /* Alinha valores e saldo à direita */
+
+        td {
+            padding: 20px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .text-saque {
+            color: #ef4444;
+            font-weight: 700;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .text-deposito {
+            color: #10b981;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .text-muted {
+            color: #64748b;
+        }
+
+        #historyEmpty {
+            padding: 40px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 16px;
+            display: none;
+        }
+
+        #resultado {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: #0f172a;
+            color: #10b981;
+            border-radius: 12px;
+            font-family: monospace;
+        }
+
+        /* ==========================================
+         6. RESPONSIVIDADE
+         ========================================== */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 24px;
+                box-shadow: none;
+                border-bottom: 1px solid #1e293b;
+            }
+
+            .brand {
+                margin-bottom: 24px;
+            }
+
+            .main-content {
+                padding: 20px;
+                overflow-y: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+            Banco System
+        </div>
+        <nav class="menu">
+            <div class="menu-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                Dashboard
+            </div>
+            <div id="menuStats" class="menu-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                Estatísticas
+            </div>
+           
+        </nav>
+        <div class="sidebar-footer">
+            <button id="btnLogout" class="btn-logout">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                Sair da Conta
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="header">
+            <h1>Visão Geral</h1>
+            <div class="profile-widget">
+                <div class="avatar">US</div>
+                <div class="user-info">
+                    <p>Usuário Ativo</p>
+                    <span>Logado</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card-panel" style="padding: 0; border: none; background: transparent; box-shadow: none;">
+                <div class="credit-card">
+                    <div class="card-top-info">
+                        <div>
+                            <span class="acc-label">Número da Conta</span>
+                            <span class="acc-number" id="accId">0000</span>
+                        </div>
+                        <div class="acc-type-badge" id="accTipo">Conta Corrente</div>
+                    </div>
+                    <div class="card-bottom-info">
+                        <div class="balance-label">Saldo Disponível</div>
+                        <div class="balance-value"><span>R$</span><span id="accSaldo" style="font-size: inherit; font-weight: inherit; opacity: 1; margin: 0;">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <div class="panel-title">Movimentação Rápida</div>
+
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <span class="prefix">R$</span>
+                        <input id="valor" type="number" step="0.01" value="100.00" placeholder="0.00" />
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="sacar" class="btn btn-withdraw">
+                        <svg width="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Sacar
+                    </button>
+                    <button id="depositar" class="btn btn-deposit">
+                        <svg width="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                        Depositar
+                    </button>
+                </div>
+                <pre id="resultado"></pre>
+            </div>
+        </div>
+
+        <div class="history-panel">
+            <div class="panel-title">Histórico de Transações</div>
+            <div class="table-responsive">
+                <table id="historicoTable">
+                    <thead>
+                        <tr>
+                            <th>Data e Hora</th>
+                            <th>Tipo de Operação</th>
+                            <th style="text-align: right;">Taxa</th>
+                            <th style="text-align: right;">Valor</th>
+                            <th style="text-align: right;">Saldo Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historicoBody"></tbody>
+                </table>
+                <div id="historyEmpty">Você ainda não possui movimentações recentes.</div>
+            </div>
+        </div>
+
+        <!-- Statistics panel (hidden by default) -->
+        <div id="statsPanel" class="history-panel" style="display:none;">
+            <div class="panel-title">Estatísticas</div>
+            <div style="padding:12px 0 0 0; display:flex; align-items:center; gap:12px;">
+                <label for="statsRange" class="text-muted">Período:</label>
+                <select id="statsRange" style="padding:8px; border-radius:8px; border:1px solid #e6eef9;">
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30" selected>Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                </select>
+            </div>
+            <div style="padding:16px 0 0 0;">
+                <canvas id="statsChart" width="800" height="300"></canvas>
+                <div id="statsEmpty" style="padding:20px; color:#64748b; display:none;">Nenhum dado para exibir.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // FUNÇÕES BASE DO SEU SISTEMA INTACTAS
+        async function send(path, method = 'POST', body = null) {
+            const token = localStorage.getItem('token') || '';
+            const opts = { method, headers: { 'Authorization': 'Bearer ' + token } };
+            if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+            const res = await fetch(path, opts);
+            const text = await res.text();
+            return { status: res.status, text };
+        }
+
+        async function loadTransactions(accountId, page = 1) {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/contas/${accountId}/transacoes?page=${page}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            const historicoBody = document.getElementById('historicoBody');
+            const historyEmpty = document.getElementById('historyEmpty');
+            const historicoTable = document.getElementById('historicoTable');
+
+            historicoBody.innerHTML = '';
+
+            if (!res.ok) {
+                historicoTable.style.display = 'none';
+                historyEmpty.style.display = 'block';
+                historyEmpty.textContent = 'Erro ao carregar histórico.';
+                return;
+            }
+
+            const items = await res.json();
+            if (!items || items.length === 0) {
+                historicoTable.style.display = 'none';
+                historyEmpty.style.display = 'block';
+                return;
+            }
+
+            historicoTable.style.display = 'table';
+            historyEmpty.style.display = 'none';
+
+            items.forEach(t => {
+                const tr = document.createElement('tr');
+                const data = document.createElement('td');
+                const tipo = document.createElement('td');
+                const taxa = document.createElement('td');
+                const valor = document.createElement('td');
+                const saldo = document.createElement('td');
+
+                // Alinhamentos
+                taxa.style.textAlign = 'right';
+                valor.style.textAlign = 'right';
+                saldo.style.textAlign = 'right';
+
+                // Data formatada
+                try {
+                    const d = new Date(t.data || t.Data || t.date || t.Data);
+                    data.textContent = isNaN(d.getTime()) ? (t.data || t.Data || '') : d.toLocaleString('pt-BR');
+                } catch (e) {
+                    data.textContent = t.data || t.Data || '';
+                }
+                data.className = 'text-muted';
+
+                // Tipo e Formatação Condicional
+                let tipoNome = "";
+                const tipoMap = ['Depósito', 'Saque', 'Transferência'];
+                if (typeof t.tipo === 'number') tipoNome = tipoMap[t.tipo] || t.tipo;
+                else if (typeof t.tipo === 'string') tipoNome = (tipoMap[parseInt(t.tipo)] || t.tipo);
+                else tipoNome = t.tipo || '';
+
+                tipo.textContent = tipoNome;
+
+                const v = Number(t.valor ?? t.Valor) || 0;
+                if (tipoNome.toLowerCase().includes('saque') || tipoNome.toLowerCase().includes('transfer')) {
+                    valor.innerHTML = `<span class="text-saque">- R$ ${v.toFixed(2)}</span>`;
+                } else {
+                    valor.innerHTML = `<span class="text-deposito">+ R$ ${v.toFixed(2)}</span>`;
+                }
+
+                taxa.textContent = 'R$ ' + (Number(t.taxaAplicada ?? t.TaxaAplicada) || 0).toFixed(2);
+                taxa.className = 'text-muted';
+
+                saldo.textContent = 'R$ ' + (Number(t.saldoApos ?? t.SaldoApos) || 0).toFixed(2);
+                saldo.style.fontWeight = '700';
+
+                tr.appendChild(data);
+                tr.appendChild(tipo);
+                tr.appendChild(taxa);
+                tr.appendChild(valor);
+                tr.appendChild(saldo);
+                historicoBody.appendChild(tr);
+            });
+        }
+
+        function show(text) {
+            const el = document.getElementById('resultado');
+            el.style.display = 'block';
+            el.textContent = text;
+            setTimeout(() => { el.style.display = 'none'; }, 5000); // Esconde a mensagem após 5 segundos
+        }
+
+        async function loadAccount() {
+            const id = localStorage.getItem('accountId');
+            const token = localStorage.getItem('token');
+            if (!id || !token) { window.location.href = 'login.html'; return; }
+            const r = await fetch('/api/contas/' + id, { headers: { 'Authorization': 'Bearer ' + token } });
+            if (r.status !== 200) { window.location.href = 'login.html'; return; }
+            const acc = await r.json();
+
+            document.getElementById('accId').textContent = acc.id;
+            document.getElementById('accTipo').textContent = acc.tipo || 'Conta Corrente';
+            document.getElementById('accSaldo').textContent = Number(acc.saldo).toFixed(2);
+
+            // Assim que carregar a conta, já carrega o histórico para mostrar tudo na mesma tela
+            await loadTransactions(id);
+        }
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('accountId');
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('sacar').addEventListener('click', async () => {
+            const id = localStorage.getItem('accountId');
+            const valor = parseFloat(document.getElementById('valor').value);
+            const r = await send('/api/transacoes/sacar', 'POST', { contaId: parseInt(id), valor, tipo: 1 });
+            show(r.text);
+            if (r.status === 200) {
+                await loadAccount(); // Recarrega saldo e histórico na mesma hora
+            }
+        });
+
+        document.getElementById('depositar').addEventListener('click', async () => {
+            const id = localStorage.getItem('accountId');
+            const valor = parseFloat(document.getElementById('valor').value);
+            const r = await send('/api/transacoes/depositar', 'POST', { contaId: parseInt(id), valor, tipo: 0 });
+            show(r.text);
+            if (r.status === 200) {
+                await loadAccount(); // Recarrega saldo e histórico na mesma hora
+            }
+        });
+
+        // Inicializa a página
+        loadAccount();
+    </script>
+</body>
+</html>

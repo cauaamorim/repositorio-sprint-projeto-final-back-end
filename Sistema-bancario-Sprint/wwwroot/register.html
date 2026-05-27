@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrar - Conta Digital</title>
+    <style>
+        /* 1. Reset e Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f4f4f5; /* Fundo levemente mais suave */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #18181b;
+        }
+
+        /* 2. Card Principal */
+        .box {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px; /* Bordas um pouco mais arredondadas */
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 440px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #09090b;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #71717a;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* 3. Grupos de Inputs */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #27272a;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #09090b;
+            background-color: #ffffff;
+            border: 1px solid #d4d4d8;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #a1a1aa;
+        }
+
+        input:focus, select:focus {
+            border-color: #18181b;
+            box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.1);
+        }
+
+        input:disabled {
+            background-color: #f4f4f5;
+            color: #a1a1aa;
+            cursor: not-allowed;
+        }
+
+        /* 4. Select Personalizado */
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2371717a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            pointer-events: none;
+        }
+
+        /* 5. Checkboxes Melhorados */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+            .checkbox-group input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                accent-color: #18181b; /* Cor do checkbox quando marcado */
+                cursor: pointer;
+                margin: 0;
+            }
+
+            .checkbox-group label {
+                margin-bottom: 0; /* Remove a margem do label normal */
+                font-size: 13px;
+                font-weight: 400;
+                color: #52525b;
+                cursor: pointer;
+                user-select: none;
+            }
+
+        /* 6. Botão Principal */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #18181b;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+            button:hover {
+                background: #27272a;
+            }
+
+            button:active {
+                transform: scale(0.98);
+            }
+
+        /* 7. Links e Rodapé */
+        .footer-links {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .link {
+            color: #18181b;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+            .link:hover {
+                color: #71717a;
+            }
+
+        /* Alerta de Resultado */
+        #resultado {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f4f4f5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #27272a;
+            text-align: center;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Criar conta</h2>
+        <p class="subtitle">Abra sua conta digital em menos de 2 minutos.</p>
+
+        <form id="registerForm">
+            <div class="input-group">
+                <label for="nome">Nome completo</label>
+                <input id="nome" type="text" placeholder="Ex: João Silva" required />
+            </div>
+
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" placeholder="nome@exemplo.com" required />
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input id="senha" type="password" placeholder="No mínimo 8 caracteres" required minlength="8" />
+            </div>
+
+            <div class="input-group">
+                <label for="tipo">Tipo de conta</label>
+                <div class="select-wrapper">
+                    <select id="tipo">
+                        <option value="corrente">Conta Corrente (Pessoa Física)</option>
+                        <option value="empresarial">Conta Empresarial (PJ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input id="limiteAtivo" type="checkbox" />
+                <label for="limiteAtivo">Ativar limite de gasto mensal</label>
+            </div>
+
+            <div class="input-group">
+                <input id="limiteGasto" type="number" step="0.01" min="0" value="0" disabled placeholder="R$ 0,00" />
+            </div>
+
+            <div class="checkbox-group">
+                <input id="termosLei" type="checkbox" required />
+                <label for="termosLei">
+                    Li e concordo com os <a class="link" href="https://www.gov.br/esporte/pt-br/acesso-a-informacao/lgpd" target="_blank">Termos de Uso e LGPD</a>
+                </label>
+            </div>
+
+            <button type="submit" id="btnRegister">Criar conta</button>
+        </form>
+
+        <div class="footer-links">
+            <a class="link" href="login.html">Já tem uma conta? Entrar</a>
+        </div>
+
+        <pre id="resultado" style="display:none;"></pre>
+    </div>
+
+    <script>
+    async function send(path, method='POST', body=null){
+      const opts = { method, headers: {} };
+      if (body){ opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+      const res = await fetch(path, opts);
+      const text = await res.text();
+      return { status: res.status, text };
+    }
+
+    function show(text){
+        const el = document.getElementById('resultado');
+        el.style.display='block';
+        el.textContent = text;
+    }
+
+    // Formulário de submissão
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const tipo = document.getElementById('tipo').value;
+      const limiteAtivo = document.getElementById('limiteAtivo').checked;
+      const limiteGasto = parseFloat(document.getElementById('limiteGasto').value) || 0;
+
+      const r = await send('/api/auth/register?tipo='+encodeURIComponent(tipo),'POST',{ nome, email, senha, limiteAtivo, limiteGasto });
+
+      if (r.status===201 || r.status===200){
+        show('Conta criada com sucesso! Redirecionando para o login...');
+        // window.location.href = 'login.html?registered=true';
+      } else {
+        show('Erro: ' + r.text);
+      }
+    });
+
+    // Lógica para habilitar/desabilitar o campo de limite numérico
+    document.getElementById('limiteAtivo').addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      const el = document.getElementById('limiteGasto');
+      el.disabled = !checked;
+      if (!checked) el.value = '0';
+      if (checked) el.focus(); // Foca no campo automaticamente ao marcar
+    });
+    </script>
+</body>
+</html>

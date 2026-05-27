@@ -1,0 +1,237 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registrar - Caixa</title>
+  <style>
+      /* 1. Reset de nível de produção */
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          -webkit-font-smoothing: antialiased; /* Deixa as fontes mais nítidas */
+      }
+
+      body {
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          background-color: #fafafa; /* Fundo minimalista estilo Apple/Stripe */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          color: #18181b; /* Preto fosco elegante */
+      }
+
+      /* 2. Card de Registro */
+      .box {
+          background: #ffffff;
+          padding: 40px;
+          border-radius: 12px;
+          border: 1px solid #e4e4e7; /* Borda sutil em vez de sombra pesada */
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+          width: 100%;
+          max-width: 440px; /* Um pouco mais largo para acomodar o grid */
+      }
+
+      h2 {
+          font-size: 24px;
+          font-weight: 600;
+          letter-spacing: -0.5px;
+          color: #09090b;
+          margin-bottom: 6px;
+          text-align: center;
+      }
+
+      .subtitle {
+          font-size: 14px;
+          color: #71717a;
+          text-align: center;
+          margin-bottom: 28px;
+      }
+
+      /* Layout em duas colunas */
+      .grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+      }
+
+      .input-group {
+          margin-bottom: 20px;
+      }
+
+      label {
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          color: #27272a;
+          margin-bottom: 6px;
+      }
+
+      /* 3. Inputs e Selects Padronizados */
+      input, select {
+          width: 100%;
+          padding: 10px 14px;
+          font-size: 14px;
+          font-family: inherit;
+          color: #09090b;
+          background-color: #ffffff;
+          border: 1px solid #d4d4d8;
+          border-radius: 6px;
+          outline: none;
+          transition: all 0.15s ease-in-out;
+      }
+
+          input::placeholder {
+              color: #a1a1aa;
+          }
+
+          /* Efeito de foco moderno (Estilo Tailwind/Shadcn) */
+          input:focus, select:focus {
+              border-color: #09090b;
+              box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.05);
+          }
+
+      /* 4. Engenharia do Select Perfeito */
+      .select-wrapper {
+          position: relative;
+          width: 100%;
+      }
+
+      select {
+          appearance: none; /* Esconde a seta nativa feia do navegador */
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          padding-right: 40px; /* Garante que o texto não morda a nova seta */
+          cursor: pointer;
+      }
+
+      /* Inserindo uma seta minimalista via SVG moderno */
+      .select-wrapper::after {
+          content: "";
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2371717a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+          background-size: contain;
+          background-repeat: no-repeat;
+          pointer-events: none; /* Impede que o clique na seta trave o select */
+      }
+
+      /* 5. O Botão Principal (SaaS Look) */
+      button {
+          width: 100%;
+          padding: 11px;
+          background: #18181b; /* Botão escuro sólido: transmite muita robustez */
+          color: #ffffff;
+          font-size: 14px;
+          font-weight: 500;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          margin-top: 8px;
+          transition: background-color 0.15s ease;
+      }
+
+          button:hover {
+              background: #27272a;
+          }
+
+          button:active {
+              background: #3f3f46;
+          }
+
+      /* 6. Rodapé */
+      .footer-text {
+          margin-top: 24px;
+          font-size: 13px;
+          color: #71717a;
+          text-align: center;
+      }
+
+      .link {
+          color: #18181b;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+          font-weight: 500;
+          transition: color 0.15s ease;
+      }
+
+          .link:hover {
+              color: #71717a;
+          }
+  </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Criar conta</h2>
+        <p class="subtitle">Abra sua conta digital em menos de 2 minutos.</p>
+
+        <form id="registerForm">
+            <div class="input-group">
+                <label for="nome">Nome completo</label>
+                <input id="nome" type="text" placeholder="Ex: João Silva" required />
+            </div>
+
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input id="email" type="email" placeholder="nome@exemplo.com" required />
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input id="senha" type="password" placeholder="No mínimo 8 caracteres" required />
+            </div>
+
+            <div class="input-group">
+                <label for="tipo">Tipo de conta</label>
+                <div class="select-wrapper">
+                    <select id="tipo">
+                        <option value="corrente">Conta Corrente (Pessoa Física)</option>
+                        <option value="empresarial">Conta Empresarial (PJ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" id="btnRegister">Criar conta</button>
+        </form>
+
+        <a class="link" href="login.html">Já tenho conta</a>
+
+        <pre id="resultado" style="display:none;"></pre>
+    </div>
+
+  <script>
+    async function send(path, method='POST', body=null){
+      const opts = { method, headers: {} };
+      if (body){ opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+      const res = await fetch(path, opts);
+      const text = await res.text();
+      return { status: res.status, text };
+    }
+
+    function show(text){ const el = document.getElementById('resultado'); el.style.display='block'; el.textContent = text; }
+
+    // Evita envio acidental do formulário ao pressionar Enter e garante comportamento controlado
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const tipo = document.getElementById('tipo').value;
+      const r = await send('/api/auth/register?tipo='+encodeURIComponent(tipo),'POST',{ nome, email, senha });
+      if (r.status===201){
+        show('Conta criada com sucesso. Você pode ir para o login.');
+        // redireciona de volta ao login informando sucesso (opcional)
+        // window.location.href = 'login.html?registered=true';
+      } else {
+        show(r.text);
+      }
+    });
+  </script>
+</body>
+</html>

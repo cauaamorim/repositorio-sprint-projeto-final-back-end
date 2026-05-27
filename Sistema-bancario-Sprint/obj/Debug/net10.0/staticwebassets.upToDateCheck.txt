@@ -1,0 +1,8 @@
+wwwroot\bank.html
+wwwroot\login.html
+wwwroot\register.html
+wwwroot\stats.html
+C:\Users\232.975907\Sistema-Bancario-Sprint-apresentar\Sistema-Bancario-Sprint\Sistema-bancario-Sprint\wwwroot\bank.html
+C:\Users\232.975907\Sistema-Bancario-Sprint-apresentar\Sistema-Bancario-Sprint\Sistema-bancario-Sprint\wwwroot\login.html
+C:\Users\232.975907\Sistema-Bancario-Sprint-apresentar\Sistema-Bancario-Sprint\Sistema-bancario-Sprint\wwwroot\register.html
+C:\Users\232.975907\Sistema-Bancario-Sprint-apresentar\Sistema-Bancario-Sprint\Sistema-bancario-Sprint\wwwroot\stats.html

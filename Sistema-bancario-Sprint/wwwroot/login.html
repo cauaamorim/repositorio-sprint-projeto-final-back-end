@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login Premium - Caixa</title>
+    <style>
+        /* ==========================================
+         1. RESET & CONFIGURAÇÕES GERAIS
+         ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            /* Fundo com gradiente sutil para dar profundidade na apresentação */
+            background: radial-gradient(circle at top right, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #0f172a;
+            padding: 24px;
+        }
+
+        /* ==========================================
+         2. ANIMAÇÃO DE ENTRADA DO CARD (WOW FACTOR)
+         ========================================== */
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .box {
+            background: #ffffff;
+            padding: 48px 40px;
+            border-radius: 24px; /* Bordas ligeiramente mais curvas, estilo iOS moderno */
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            /* Sombra ultra-fina multicamadas (Soft Shadows) */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 20px -3px rgba(15, 23, 42, 0.04), 0 20px 25px -5px rgba(15, 23, 42, 0.06);
+            width: 100%;
+            max-width: 400px;
+            /* Gatilho da animação de entrada */
+            animation: cardEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        h2 {
+            margin: 0 0 8px;
+            color: #0f172a;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* ==========================================
+         3. ALERTAS COM TRANSIÇÃO SUAVE
+         ========================================== */
+        @keyframes alertShow {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 24px;
+            display: none;
+            border: 1px solid transparent;
+            animation: alertShow 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+            .alert.success {
+                background-color: #f0fdf4;
+                color: #166534;
+                border-color: #bbf7d0;
+            }
+
+            .alert.error {
+                background-color: #fef2f2;
+                color: #991b1b;
+                border-color: #fecaca;
+            }
+
+        /* ==========================================
+         4. FORMULÁRIO & INPUTS INTERATIVOS
+         ========================================== */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+            transition: color 0.2s ease;
+        }
+
+        /* Quando o input focar, a label muda de cor coordenadamente */
+        .input-group:focus-within label {
+            color: #2563eb;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            color: #0f172a;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+            /* Transição de alta performance controlando apenas propriedades exatas */
+            transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            input::placeholder {
+                color: #94a3b8;
+                transition: color 0.2s ease;
+            }
+
+            /* Estado de Foco Interativo */
+            input:focus {
+                background-color: #ffffff;
+                border-color: #2563eb;
+                /* Anel de foco com efeito de desfoque suave */
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            }
+
+                /* limpa o placeholder ao focar para um visual mais limpo */
+                input:focus::placeholder {
+                    color: transparent;
+                }
+
+        /* ==========================================
+         5. BOTÃO PRINCIPAL COM EFEITO DE PRENSAGEM
+         ========================================== */
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+            /* Controla o tempo de resposta do clique */
+            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+            button:hover {
+                background: #1d4ed8;
+                box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+            }
+
+            /* Efeito físico refinado de clique para demonstrações */
+            button:active {
+                transform: scale(0.96);
+                box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+            }
+
+        /* ==========================================
+         6. LINKS DE SUPORTE
+         ========================================== */
+        .link {
+            display: block;
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+            .link:hover {
+                color: #2563eb;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>Bem-vindo de volta</h2>
+        <p class="subtitle">Acesse sua conta bancária digital</p>
+
+        <div id="resultado" class="alert"></div>
+
+        <div class="input-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com">
+        </div>
+
+        <div class="input-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="••••••••">
+        </div>
+
+        <button id="btnLogin">Entrar na conta</button>
+        <a href="register.html" class="link">Não tem uma conta? <span style="color: #2563eb; font-weight: 600;">Cadastre-se</span></a>
+    </div>
+
+    <script>
+        // Injeção de requisição limpa
+        async function send(path, method = 'POST', body = null) {
+            const opts = { method, headers: {} };
+            if (body) {
+                opts.headers['Content-Type'] = 'application/json';
+                opts.body = JSON.stringify(body);
+            }
+            const res = await fetch(path, opts);
+            const text = await res.text();
+            return { status: res.status, text };
+        }
+
+        // Manipulação do alerta com reinicialização de animação
+        function showMessage(text, type = 'error') {
+            const el = document.getElementById('resultado');
+            el.textContent = text;
+            el.className = `alert ${type}`;
+            el.style.display = 'block';
+
+            // Truque para reiniciar a animação do CSS caso a mensagem mude
+            el.style.animation = 'none';
+            el.offsetHeight; /* força reflow */
+            el.style.animation = null;
+        }
+
+        // Leitor de parâmetros da URL para capturar o sucesso do registro
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                showMessage('Conta criada com sucesso! Faça seu login.', 'success');
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        });
+
+        // Lógica do botão de Login
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if (!email || !senha) {
+                showMessage('Por favor, preencha todos os campos.', 'error');
+                return;
+            }
+
+            try {
+                const r = await send('/api/auth/login', 'POST', { email, senha });
+
+                if (r.status === 200) {
+                    const json = JSON.parse(r.text);
+                    localStorage.setItem('token', json.token);
+                    localStorage.setItem('accountId', json.id);
+                    window.location.href = 'bank.html';
+                } else {
+                    showMessage(r.text || 'Dados de acesso incorretos.', 'error');
+                }
+            } catch (e) {
+                showMessage('Não foi possível conectar ao servidor.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

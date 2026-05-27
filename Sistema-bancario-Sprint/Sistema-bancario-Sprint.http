@@ -1,0 +1,6 @@
+@Sistema_bancario_Sprint_HostAddress = http://localhost:5222
+
+GET {{Sistema_bancario_Sprint_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

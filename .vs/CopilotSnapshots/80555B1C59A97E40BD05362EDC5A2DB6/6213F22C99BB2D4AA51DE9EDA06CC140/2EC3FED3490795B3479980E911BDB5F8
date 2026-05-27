@@ -1,0 +1,515 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estatísticas - Minha Conta</title>
+    <style>
+        /* Variáveis de Cores Premium (Modo Light/Corporate) */
+        :root {
+            --bg-main: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --sidebar-width: 260px;
+        }
+
+        /* Reset e Estrutura Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- MENU SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 24px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+            .menu-item a:hover {
+                background: #f1f5f9;
+                color: var(--text-main);
+            }
+
+        .menu-item.active a {
+            background: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* Topbar/Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+
+        /* Grid de Filtros e Resumos */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards Estilizados */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Área de Controles */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .controls label {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-muted);
+            }
+
+        select {
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background-color: #fff;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: border 0.2s;
+        }
+
+            select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+            button:hover:not(:disabled) {
+                background-color: var(--primary-hover);
+            }
+
+            button:disabled {
+                background-color: #cbd5e1;
+                cursor: not-allowed;
+            }
+
+        /* Resumo Financeiro */
+        .summary-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .summary-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-top: 6px;
+            letter-spacing: -1px;
+        }
+
+        /* Seção do Gráfico de Lado a Lado */
+        .chart-card {
+            width: 100%;
+            min-height: 420px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin-top: 16px;
+        }
+
+        /* Mensagens de Feedback */
+        .msg {
+            color: var(--text-muted);
+            padding: 32px;
+            text-align: center;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--border);
+            margin-top: 24px;
+            font-weight: 500;
+        }
+
+        /* --- RESPONSIVIDADE MOBILE --- */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px 24px;
+            }
+
+            .brand {
+                margin-bottom: 16px;
+            }
+
+            .menu-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 24px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span>🔹 MiniBank</span>
+        </div>
+        <nav>
+            <ul class="menu-list">
+                <li class="menu-item"><a href="bank.html">🏠 Início</a></li>
+                <li class="menu-item"><a href="#">💸 Transferências</a></li>
+                <li class="menu-item"><a href="#">📄 Extratos</a></li>
+                <li class="menu-item active"><a href="#">📊 Estatísticas</a></li>
+                <li class="menu-item"><a href="#">⚙️ Configurações</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Estatísticas de Gastos</h1>
+            </div>
+            <div class="controls">
+                <label for="range">Período:</label>
+                <select id="range">
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30" selected>Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                </select>
+                <button id="btnReload">Atualizar</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card summary-card">
+                <p class="summary-title">Total gasto no período</p>
+                <p class="summary-value" id="totalGasto">R$ 0,00</p>
+            </div>
+            <div class="card summary-card" style="border-left: 4px solid var(--primary);">
+                <p class="summary-title">Análise de Fluxo</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px; line-height: 1.5;">
+                    O gráfico exibe exclusivamente os seus <strong>saques e despesas</strong> efetuados no intervalo de tempo selecionado acima.
+                </p>
+            </div>
+        </div>
+
+        <div class="card chart-card">
+            <h3 style="font-size: 16px; font-weight: 600;">Histórico Diário de Despesas</h3>
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
+            <div id="msg" class="msg" style="display:none">Nenhum dado para exibir.</div>
+        </div>
+    </main>
+
+    <script>
+        const brlFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        async function fetchTransactions(accountId, page = 1, pageSize = 2000) {
+            const token = localStorage.getItem('token') || '';
+            const res = await fetch(`/api/contas/${accountId}/transacoes?page=${page}&pageSize=${pageSize}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Falha ao buscar transações');
+            return await res.json();
+        }
+
+        function buildLabels(days) {
+            const now = new Date();
+            const labels = [];
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(now);
+                d.setDate(now.getDate() - i);
+                labels.push(d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+            }
+            return labels;
+        }
+
+        let chart = null;
+        function renderChart(labels, amounts) {
+            const ctx = document.getElementById('chart').getContext('2d');
+            if (chart) chart.destroy();
+
+            // Criando efeito de Gradiente Premium abaixo da Linha do Gráfico
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(239, 68, 68, 0.25)');
+            gradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
+
+            // Mudei para tipo 'line' com curvas suaves (Smooth Line Chart)
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Despesas Diárias',
+                        data: amounts,
+                        borderColor: '#ef4444',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.38, // Curvatura suave e elegante das linhas
+                        pointBackgroundColor: '#ef4444',
+                        pointHoverRadius: 7,
+                        pointRadius: 2,
+                        hitRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // Remove legenda poluída
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 12,
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 14 },
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (context) {
+                                    return ' Gasto: ' + brlFormatter.format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            border: { dash: [5, 5] },
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#64748b',
+                                callback: value => brlFormatter.format(value)
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#64748b',
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setUIState(isLoading) {
+            const btn = document.getElementById('btnReload');
+            const select = document.getElementById('range');
+            btn.disabled = isLoading;
+            select.disabled = isLoading;
+            btn.textContent = isLoading ? 'Carregando...' : 'Atualizar';
+        }
+
+        async function load(days) {
+            const id = localStorage.getItem('accountId');
+            if (!id) { window.location.href = 'login.html'; return; }
+
+            const msgEl = document.getElementById('msg');
+            const chartCanvas = document.getElementById('chart');
+            const totalEl = document.getElementById('totalGasto');
+
+            msgEl.style.display = 'none';
+            chartCanvas.style.display = 'block';
+            setUIState(true);
+
+            try {
+                const items = await fetchTransactions(id, 1, 2000);
+
+                if (!items || items.length === 0) {
+                    msgEl.textContent = 'Nenhuma transação encontrada na sua conta.';
+                    msgEl.style.display = 'block';
+                    chartCanvas.style.display = 'none';
+                    totalEl.textContent = brlFormatter.format(0);
+                    setUIState(false);
+                    return;
+                }
+
+                const labels = buildLabels(days);
+                const counts = new Array(labels.length).fill(0);
+                let totalGastoPeriodo = 0;
+
+                items.forEach(t => {
+                    let tipo = t.tipo ?? t.Tipo ?? t.TipoTransacao;
+                    if (typeof tipo === 'string' && /^\d+$/.test(tipo)) tipo = parseInt(tipo, 10);
+
+                    const isSaque = (typeof tipo === 'number' && tipo === 1) || (typeof tipo === 'string' && tipo.toLowerCase().includes('saque'));
+                    if (!isSaque) return;
+
+                    const d = new Date(t.data || t.Data || t.date || t.Date);
+                    if (isNaN(d.getTime())) return;
+
+                    const key = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                    const idx = labels.indexOf(key);
+
+                    if (idx >= 0) {
+                        const valorGasto = Number(t.valor ?? t.Valor) || 0;
+                        counts[idx] += valorGasto;
+                        totalGastoPeriodo += valorGasto;
+                    }
+                });
+
+                totalEl.textContent = brlFormatter.format(totalGastoPeriodo);
+
+                const allZero = counts.every(v => v === 0);
+                if (allZero) {
+                    msgEl.textContent = `Nenhum gasto registrado nos últimos ${days} dias.`;
+                    msgEl.style.display = 'block';
+                }
+
+                renderChart(labels, counts.map(v => Number(v.toFixed(2))));
+
+            } catch (e) {
+                console.error(e);
+                msgEl.textContent = 'Erro ao carregar os dados do painel bancário.';
+                msgEl.style.display = 'block';
+                chartCanvas.style.display = 'none';
+            } finally {
+                setUIState(false);
+            }
+        }
+
+        document.getElementById('btnReload').addEventListener('click', () => {
+            const days = parseInt(document.getElementById('range').value, 10) || 30;
+            load(days);
+        });
+
+        // Evento para atualizar automaticamente ao mudar o select se preferir
+        document.getElementById('range').addEventListener('change', (e) => {
+            load(parseInt(e.target.value, 10) || 30);
+        });
+
+        // Carga inicial do gráfico
+        load(parseInt(document.getElementById('range').value, 10) || 30);
+    </script>
+</body>
+</html>

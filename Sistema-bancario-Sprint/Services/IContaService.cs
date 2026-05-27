@@ -1,0 +1,17 @@
+using Sistema_bancario_Sprint.models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Sistema_bancario_Sprint.Services;
+
+public interface IContaService
+{
+    Task<Conta?> GetByIdAsync(int id);
+    Task<IEnumerable<Conta>> GetAllAsync();
+    Task<Conta> CreateAsync(Conta conta);
+
+    Task<IEnumerable<Transacao>> GetTransactionsAsync(int contaId, int page = 1, int pageSize = 50);
+    Task<bool> DepositAsync(int contaId, double valor);
+    Task<WithdrawResult> WithdrawAsync(int contaId, double valor);
+    Task<bool> UpdateLimitAsync(int contaId, bool limiteAtivo, decimal limiteGasto);
+}

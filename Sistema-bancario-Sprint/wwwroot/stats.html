@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estatísticas - Minha Conta</title>
+    <style>
+        /* Variáveis de Cores Premium (Modo Light/Corporate) */
+        :root {
+            --bg-main: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --sidebar-width: 260px;
+        }
+
+        /* Reset e Estrutura Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- MENU SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: #0f172a; /* Azul muito escuro/Slate */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 32px 24px;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+            .menu-item.active {
+                background: #1e293b;
+                color: #ffffff;
+            }
+
+            .menu-item:hover:not(.active) {
+                background: #1e293b;
+                color: #e2e8f0;
+            }
+
+            .menu-item svg {
+                width: 20px;
+                height: 20px;
+            }
+
+        /* Rodapé da Sidebar - Força o posicionamento na parte inferior */
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 32px;
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn-logout:hover {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: #ef4444;
+            }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            margin-left: 0;
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* Topbar/Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+
+        /* Grid de Filtros e Resumos */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Cards Estilizados */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Área de Controles */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .controls label {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-muted);
+            }
+
+        select {
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background-color: #fff;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: border 0.2s;
+        }
+
+            select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+            button:hover:not(:disabled) {
+                background-color: var(--primary-hover);
+            }
+
+            button:disabled {
+                background-color: #cbd5e1;
+                cursor: not-allowed;
+            }
+
+        /* Resumo Financeiro */
+        .summary-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .summary-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-top: 6px;
+            letter-spacing: -1px;
+        }
+
+        /* Seção do Gráfico */
+        .chart-card {
+            width: 100%;
+            min-height: 420px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin-top: 16px;
+        }
+
+        /* Mensagens de Feedback */
+        .msg {
+            color: var(--text-muted);
+            padding: 32px;
+            text-align: center;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--border);
+            margin-top: 24px;
+            font-weight: 500;
+        }
+
+        /* --- RESPONSIVIDADE MOBILE --- */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px 24px;
+            }
+
+            .brand {
+                margin-bottom: 16px;
+            }
+
+            .menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-footer {
+                margin-top: 16px;
+                padding-top: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 24px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <svg viewBox="0 0 48 48" width="36" height="36" aria-hidden="true">
+                <defs>
+                    <linearGradient id="g1" x1="0" x2="1">
+                        <stop offset="0" stop-color="#60a5fa" />
+                        <stop offset="1" stop-color="#7c3aed" />
+                    </linearGradient>
+                </defs>
+                <rect width="48" height="48" rx="10" fill="url(#g1)" />
+                <text x="50%" y="56%" font-family="Inter, Arial" font-size="20" font-weight="700" fill="#fff" text-anchor="middle">BS</text>
+            </svg>
+            <span style="color:#fff; font-weight:800;">Banco System</span>
+        </div>
+
+        <nav class="menu">
+            <div class="menu-item" onclick="window.location.href='/bank.html'">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                <span>Dashboard</span>
+            </div>
+            <a class="menu-item active" href="/stats.html">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                <span>Estatísticas</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="login.html" style="text-decoration: none; display: block; width: 100%;">
+                <button id="btnLogout" class="btn-logout">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Sair da Conta
+                </button>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Estatísticas de Gastos</h1>
+            </div>
+            <div class="controls">
+                <label for="range">Período:</label>
+                <select id="range">
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30" selected>Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                </select>
+                <button id="btnReload">Atualizar</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card summary-card">
+                <p class="summary-title">Total gasto no período</p>
+                <p class="summary-value" id="totalGasto">R$ 0,00</p>
+            </div>
+            <div class="card summary-card" style="border-left: 4px solid var(--primary);">
+                <p class="summary-title">Análise de Fluxo</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px; line-height: 1.5;">
+                    O gráfico exibe exclusivamente os seus <strong>saques e despesas</strong> efetuados no intervalo de tempo selecionado acima.
+                </p>
+            </div>
+        </div>
+
+        <div class="card chart-card">
+            <h3 style="font-size: 16px; font-weight: 600;">Histórico Diário de Despesas</h3>
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
+            <div id="msg" class="msg" style="display:none">Nenhum dado para exibir.</div>
+        </div>
+    </main>
+
+    <script>
+        const brlFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        async function fetchTransactions(accountId, page = 1, pageSize = 2000) {
+            const token = localStorage.getItem('token') || '';
+            const res = await fetch(`/api/contas/${accountId}/transacoes?page=${page}&pageSize=${pageSize}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) throw new Error('Falha ao buscar transações');
+            return await res.json();
+        }
+
+        function buildLabels(days) {
+            const now = new Date();
+            const labels = [];
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(now);
+                d.setDate(now.getDate() - i);
+                labels.push(d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+            }
+            return labels;
+        }
+
+        let chart = null;
+        function renderChart(labels, amounts) {
+            const ctx = document.getElementById('chart').getContext('2d');
+            if (chart) chart.destroy();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(239, 68, 68, 0.25)');
+            gradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Despesas Diárias',
+                        data: amounts,
+                        borderColor: '#ef4444',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.38,
+                        pointBackgroundColor: '#ef4444',
+                        pointHoverRadius: 7,
+                        pointRadius: 2,
+                        hitRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            padding: 12,
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 14 },
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (context) {
+                                    return ' Gasto: ' + brlFormatter.format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            border: { dash: [5, 5] },
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#64748b',
+                                callback: value => brlFormatter.format(value)
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#64748b',
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setUIState(isLoading) {
+            const btn = document.getElementById('btnReload');
+            const select = document.getElementById('range');
+            btn.disabled = isLoading;
+            select.disabled = isLoading;
+            btn.textContent = isLoading ? 'Carregando...' : 'Atualizar';
+        }
+
+        async function load(days) {
+            const id = localStorage.getItem('accountId');
+            if (!id) { window.location.href = 'login.html'; return; }
+
+            const msgEl = document.getElementById('msg');
+            const chartCanvas = document.getElementById('chart');
+            const totalEl = document.getElementById('totalGasto');
+
+            msgEl.style.display = 'none';
+            chartCanvas.style.display = 'block';
+            setUIState(true);
+
+            try {
+                const items = await fetchTransactions(id, 1, 2000);
+
+                if (!items || items.length === 0) {
+                    msgEl.textContent = 'Nenhuma transação encontrada na sua conta.';
+                    msgEl.style.display = 'block';
+                    chartCanvas.style.display = 'none';
+                    totalEl.textContent = brlFormatter.format(0);
+                    setUIState(false);
+                    return;
+                }
+
+                const labels = buildLabels(days);
+                const counts = new Array(labels.length).fill(0);
+                let totalGastoPeriodo = 0;
+
+                items.forEach(t => {
+                    let tipo = t.tipo ?? t.Tipo ?? t.TipoTransacao;
+                    if (typeof tipo === 'string' && /^\d+$/.test(tipo)) tipo = parseInt(tipo, 10);
+
+                    const isSaque = (typeof tipo === 'number' && tipo === 1) || (typeof tipo === 'string' && tipo.toLowerCase().includes('saque'));
+                    if (!isSaque) return;
+
+                    const d = new Date(t.data || t.Data || t.date || t.Date);
+                    if (isNaN(d.getTime())) return;
+
+                    const key = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                    const idx = labels.indexOf(key);
+
+                    if (idx >= 0) {
+                        const valorGasto = Number(t.valor ?? t.Valor) || 0;
+                        counts[idx] += valorGasto;
+                        totalGastoPeriodo += valorGasto;
+                    }
+                });
+
+                totalEl.textContent = brlFormatter.format(totalGastoPeriodo);
+
+                const allZero = counts.every(v => v === 0);
+                if (allZero) {
+                    msgEl.textContent = `Nenhum gasto registrado nos últimos ${days} dias.`;
+                    msgEl.style.display = 'block';
+                }
+
+                renderChart(labels, counts.map(v => Number(v.toFixed(2))));
+
+            } catch (e) {
+                console.error(e);
+                msgEl.textContent = 'Erro ao carregar os dados do painel bancário.';
+                msgEl.style.display = 'block';
+                chartCanvas.style.display = 'none';
+            } finally {
+                setUIState(false);
+            }
+        }
+
+        document.getElementById('btnReload').addEventListener('click', () => {
+            const days = parseInt(document.getElementById('range').value, 10) || 30;
+            load(days);
+        });
+
+        document.getElementById('range').addEventListener('change', (e) => {
+            load(parseInt(e.target.value, 10) || 30);
+        });
+
+        load(parseInt(document.getElementById('range').value, 10) || 30);
+    </script>
+</body>
+</html>
